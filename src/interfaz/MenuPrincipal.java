@@ -27,16 +27,29 @@ public class MenuPrincipal {
             System.out.println("\n1. Registrarse");
             System.out.println("2. Iniciar Sesión");
             System.out.println("3. Salir");
-            System.out.print("\nSeleccione una opción: ");
-            opc = Integer.parseInt(sc.nextLine());
+            opc = leerEntero("\nSeleccione una opción: ");;
 
             if (opc == 1) {
                 registrarPasajeroUI();
             } else if (opc == 2) {
                 procesarLogin();
+            } else if (opc != 3) {
+                System.out.println("Opción fuera del menú. Ingrese un número del 1 al 3.");
             }
         } while (opc != 3);
         System.out.println("\nGracias por utilizar BusQ!.");
+    }
+
+    private int leerEntero(String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String entrada = sc.nextLine().trim();
+            try {
+                return Integer.parseInt(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Error: ingrese solo un número entero válido.");
+            }
+        }
     }
 
     private void registrarPasajeroUI() {
@@ -89,8 +102,7 @@ public class MenuPrincipal {
             System.out.println("3. Planificar itinerario óptimo y calcular ETA ");
             System.out.println("4. Guardar ruta favorita ");
             System.out.println("5. Cerrar sesión");
-            System.out.print("\nSeleccione una opción: ");
-            opc = Integer.parseInt(sc.nextLine());
+            opc = leerEntero("\nSeleccione una opción: ");;
 
             switch (opc) {
                 case 1:
@@ -133,6 +145,8 @@ public class MenuPrincipal {
                     break;
             }
         } while (opc != 5);
+
+        System.out.println("Ingrese un numero valido\n");
     }
 
     private void menuAdministrador(Administrador admin) {
@@ -144,8 +158,7 @@ public class MenuPrincipal {
             System.out.println("3. Suspender ruta del catálogo");
             System.out.println("4. Listar todas las rutas");
             System.out.println("5. Cerrar sesión");
-            System.out.print("\nSeleccione una opción: ");
-            opc = Integer.parseInt(sc.nextLine());
+            opc = leerEntero("\nSeleccione una opción: ");;
 
             switch (opc) {
                 case 1:
@@ -220,5 +233,7 @@ public class MenuPrincipal {
                     break;
             }
         } while (opc != 5);
+
+        System.out.println("Ingrese un numero valido\n");
     }
 }
