@@ -14,8 +14,8 @@ public class GestorUsuarios {
 
     private void cargarDatosIniciales() {
         PerfilTarifario perfilEstudiante = new PerfilTarifario("Estudiante", 0.50, true);
-        Pasajero p1 = new Pasajero(1, "Carlos Pérez", "carlos@udla.edu.ec", "1234", "ACTIVA", "Norte", perfilEstudiante);
-        Administrador admin = new Administrador(2, "Admin DMQ", "admin@busq.ec", "admin1234", "ACTIVA", "Supervisor");
+        Pasajero p1 = new Pasajero(1, "Carlos Pérez", "carlos@udla.edu.ec", "12345678", "ACTIVA", "Norte", perfilEstudiante);
+        Administrador admin = new Administrador(2, "Admin DMQ", "admin@busq.ec", "admin123", "ACTIVA", "Supervisor");
         usuarios.add(p1);
         usuarios.add(admin);
     }
