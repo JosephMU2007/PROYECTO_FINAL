@@ -89,7 +89,7 @@ public class MenuPrincipal {
             System.out.println("3. Planificar itinerario óptimo y calcular ETA ");
             System.out.println("4. Guardar ruta favorita ");
             System.out.println("5. Cerrar sesión");
-            System.out.print("\nOpción: ");
+            System.out.print("\nSeleccione una opción: ");
             opc = Integer.parseInt(sc.nextLine());
 
             switch (opc) {
@@ -144,7 +144,7 @@ public class MenuPrincipal {
             System.out.println("3. Suspender ruta del catálogo");
             System.out.println("4. Listar todas las rutas");
             System.out.println("5. Cerrar sesión");
-            System.out.print("Opción: ");
+            System.out.print("\nSeleccione una opción: ");
             opc = Integer.parseInt(sc.nextLine());
 
             switch (opc) {
@@ -171,9 +171,9 @@ public class MenuPrincipal {
                     String codAct = sc.nextLine();
                     Ruta rutaAct = gestorRutas.buscarRutaPorCodigo(codAct);
                     if (rutaAct != null) {
-                        System.out.print("Nuevo nombre de ruta o Enter para mantener: ");
-                        String nuevoNom = sc.nextLine();
-                        if (!nuevoNom.isBlank()) {
+                        System.out.print("Nuevo nombre de ruta (o Enter para mantener): ");
+                        String nuevoNom = sc.nextLine().trim();
+                        if (!nuevoNom.isEmpty() && !nuevoNom.equals(".")) {
                             rutaAct.setNombre(nuevoNom);
                         }
 

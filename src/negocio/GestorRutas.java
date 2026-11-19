@@ -67,7 +67,8 @@ public class GestorRutas {
         String resultado = "";
         for (Ruta r : rutas) {
             resultado += "[" + r.getCodigoLinea() + "] "
-                    + r.getNombre() + " - Estado: " + r.getEstado() + "\n";
+                    + r.getNombre() + " (" + r.getSectorOrigen() + " -> " + r.getSectorDestino() + ")"
+                    + " - Estado: " + r.getEstado() + "\n";
         }
         return resultado;
     }

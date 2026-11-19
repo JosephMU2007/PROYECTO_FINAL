@@ -32,7 +32,7 @@ import java.util.List;
 
         public void actualizarEstado(String estado) {
             if (estado != null && !estado.isBlank()) {
-                this.estado = estado;
+                this.estado = estado.trim().toUpperCase();
             }
         }
 
