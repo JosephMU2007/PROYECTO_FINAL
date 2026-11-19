@@ -13,6 +13,7 @@ public class Parada {
         this.coordenadaY = coordenadaY;
     }
 
+    // Distancia Euclidiana: d = sqrt((x2 - x1)^2 + (y2 - y1)^2)
     public double distanciaA(Parada otra) {
         if (otra == null) return 0.0;
         double dx = this.coordenadaX - otra.coordenadaX;
@@ -21,7 +22,7 @@ public class Parada {
     }
 
     public boolean esCaminableA(Parada otra) {
-        return distanciaA(otra) <= 0.2; // Umbral de 200m
+        return distanciaA(otra) <= 0.2; // Umbral peatonal <= 200m
     }
 
     public int getIdParada() {
