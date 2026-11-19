@@ -34,7 +34,7 @@ public class MenuPrincipal {
                 procesarLogin();
             }
         } while (opc != 3);
-        System.out.println("Gracias por utilizar BusQ.");
+        System.out.println("\nGracias por utilizar BusQ!.");
     }
 
     private void registrarPasajeroUI() {
