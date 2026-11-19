@@ -15,7 +15,9 @@ public class GestorUsuarios {
     private void cargarDatosIniciales() {
         PerfilTarifario perfilEstudiante = new PerfilTarifario("Estudiante", 0.50, true);
         Pasajero p1 = new Pasajero(1, "Carlos Pérez", "carlos@udla.edu.ec", "1234", "ACTIVA", "Norte", perfilEstudiante);
+        Administrador admin = new Administrador(2, "Admin DMQ", "admin@busq.ec", "admin1234", "ACTIVA", "Supervisor");
         usuarios.add(p1);
+        usuarios.add(admin);
     }
 
     public Usuario autenticar(String correo, String contrasena) {
@@ -27,15 +29,20 @@ public class GestorUsuarios {
         return null;
     }
 
-    public boolean registrarPasajero(String nombre, String correo, String pass, String sector, PerfilTarifario perfil) {
+    public String registrarPasajero(String nombre, String correo, String pass, String sector, PerfilTarifario perfil) {
+
+        if (pass == null || pass.length() < 8) {
+            return "Error: la contraseña debe contener mínimo 8 caracteres." ;
+        }
+
         // Valida si ya existe un usuario registrado con ese correo
         for (Usuario u : usuarios) {
             if (u.getCorreo().equalsIgnoreCase(correo)) {
-                return false; // Retorna falso indicando que ya existe
+                return "Error: el correo electrónico ya se encuentra registrado.";
             }
         }
         Pasajero nuevo = new Pasajero(usuarios.size() + 1, nombre, correo, pass, "ACTIVA", sector, perfil);
         usuarios.add(nuevo);
-        return true;
+        return "Registro exitoso. ¡Bienvenido al Asistente de Movilidad del DMQ!";
     }
 }

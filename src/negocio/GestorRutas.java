@@ -1,4 +1,5 @@
 package negocio;
+
 import modelo.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +45,30 @@ public class GestorRutas {
         return null;
     }
 
-    public String listarRutas() {
-        if (rutas.isEmpty()) return "No existen rutas registradas.";
-        StringBuilder sb = new StringBuilder();
+    public String listarRutasActivas() {
+        String resultado = "";
         for (Ruta r : rutas) {
-            sb.append("[").append(r.getCodigoLinea()).append("] ")
-                    .append(r.getNombre()).append(" (").append(r.getSectorOrigen()).append(" -> ").append(r.getSectorDestino()).append(")")
-                    .append(" | Estado: ").append(r.getEstado())
-                    .append(" | Distancia: ").append(String.format("%.2f", r.calcularDistanciaTotal())).append(" km\n");
+            if (r.getEstado().startsWith("OPERATIVA")) {
+                resultado += "[" + r.getCodigoLinea() + "] "
+                        + r.getNombre() + " (" + r.getSectorOrigen() + " -> " + r.getSectorDestino() + ")"
+                        + " | Distancia: " + String.format("%.2f", r.calcularDistanciaTotal()) + " km\n";
+            }
         }
-        return sb.toString();
+        if (resultado.isEmpty()) {
+            return "No se encontraron rutas directas ni combinaciones disponibles.";
+        }
+        return resultado;
+    }
+
+    public String listarTodasLasRutas() {
+        if (rutas.isEmpty()) {
+            return "No hay rutas registradas.";
+        }
+        String resultado = "";
+        for (Ruta r : rutas) {
+            resultado += "[" + r.getCodigoLinea() + "] "
+                    + r.getNombre() + " - Estado: " + r.getEstado() + "\n";
+        }
+        return resultado;
     }
 }

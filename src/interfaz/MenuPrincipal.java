@@ -1,5 +1,6 @@
 
 package interfaz;
+
 import modelo.*;
 import negocio.*;
 import java.util.Scanner;
@@ -20,9 +21,9 @@ public class MenuPrincipal {
     public void iniciar() {
         int opc;
         do {
-            System.out.println("\n BUSQ ");
-            System.out.println("1. Registrarse (Módulo 1)");
-            System.out.println("2. Iniciar Sesión (Módulo 1)");
+            System.out.println("\n BUSQ - ASISTENTE DE MOVILIDAD DMQ ");
+            System.out.println("1. Registrarse");
+            System.out.println("2. Iniciar Sesión");
             System.out.println("3. Salir");
             System.out.print("Seleccione una opción: ");
             opc = Integer.parseInt(sc.nextLine());
@@ -42,7 +43,7 @@ public class MenuPrincipal {
         String nombre = sc.nextLine();
         System.out.print("Correo electrónico: ");
         String correo = sc.nextLine();
-        System.out.print("Contraseña: ");
+        System.out.print("Contraseña (mínimo 8 caracteres): ");
         String pass = sc.nextLine();
         System.out.print("Sector de residencia: ");
         String sector = sc.nextLine();
@@ -52,12 +53,8 @@ public class MenuPrincipal {
         double subsidio = tipoPerfil.equalsIgnoreCase("Estudiante") ? 0.50 : 0.0;
         PerfilTarifario perfil = new PerfilTarifario(tipoPerfil, subsidio, true);
 
-        // Validamos e imprimimos el mensaje correspondiente
-        if (gestorUsuarios.registrarPasajero(nombre, correo, pass, sector, perfil)) {
-            System.out.println("Registro exitoso. ¡Bienvenido al Asistente de Movilidad del DMQ!");
-        } else {
-            System.out.println("Error: el correo electrónico ya se encuentra registrado.");
-        }
+        String resultado = gestorUsuarios.registrarPasajero(nombre, correo, pass, sector, perfil);
+        System.out.println(resultado);
     }
 
     private void procesarLogin() {
@@ -75,35 +72,39 @@ public class MenuPrincipal {
         System.out.println("Bienvenido, " + usuario.getNombreCompleto() + "!");
         if (usuario instanceof Pasajero) {
             menuPasajero((Pasajero) usuario);
+        } else if (usuario instanceof Administrador) {
+            menuAdministrador((Administrador) usuario);
         }
     }
 
     private void menuPasajero(Pasajero pasajero) {
         int opc;
         do {
-            System.out.println("\n--- MENÚ PASAJERO (MÓDULOS 1, 2 Y 3) ---");
-            System.out.println("1. Consultar catálogo de rutas y conexiones (Módulo 2)");
-            System.out.println("2. Planificar itinerario óptimo y calcular ETA (Módulo 3)");
-            System.out.println("3. Guardar ruta favorita (Módulo 3)");
+            System.out.println("\n** MENÚ PASAJERO **");
+            System.out.println("1. Consultar catálogo de rutas disponibles ");
+            System.out.println("2. Planificar itinerario óptimo y calcular ETA ");
+            System.out.println("3. Guardar ruta favorita ");
             System.out.println("4. Cerrar sesión");
             System.out.print("Opción: ");
             opc = Integer.parseInt(sc.nextLine());
 
             switch (opc) {
                 case 1:
-                    System.out.println("\n=== CATÁLOGO DE RUTAS DMQ ===");
-                    System.out.println(gestorRutas.listarRutas());
+                    System.out.println("\n** CATÁLOGO DE RUTAS DMQ **");
+                    System.out.println(gestorRutas.listarRutasActivas());
                     break;
                 case 2:
                     System.out.print("Ingrese código de línea de bus (ej. C1): ");
                     String cod = sc.nextLine();
                     Ruta ruta = gestorRutas.buscarRutaPorCodigo(cod);
-                    if (ruta != null) {
-                        Itinerario it = gestorPlanificacion.generarItinerarioOptimo(ruta, ruta.getSectorOrigen(), ruta.getSectorDestino(), "Más rápido", "08:00");
+                    if (ruta != null && ruta.getEstado().startsWith("OPERATIVA")) {
+                        System.out.print("Criterio de optimización (Más rápido / Menos transbordos / Menos caminata): ");
+                        String criterio = sc.nextLine();
+                        Itinerario it = gestorPlanificacion.generarItinerarioOptimo(ruta, criterio);
                         double costoFinal = it.calcularCostoTotal(pasajero.getPerfilTarifario());
                         double etaMin = gestorPlanificacion.calcularETA(ruta.calcularDistanciaTotal(), 30.0);
 
-                        System.out.println("\n--- ITINERARIO GENERADO ---");
+                        System.out.println("\n** ITINERARIO GENERADO **");
                         System.out.println("Origen: " + it.getOrigen() + " -> Destino: " + it.getDestino());
                         System.out.println("Duración estimada: " + it.getDuracionEstimadaMin() + " min");
                         System.out.println("Costo total con perfil (" + pasajero.getPerfilTarifario().getTipoPerfil() + "): $" + String.format("%.2f", costoFinal));
@@ -118,6 +119,57 @@ public class MenuPrincipal {
                     RutaFavorita rf = new RutaFavorita(nombreFav, "2026-11-18");
                     pasajero.guardarRutaFavorita(rf);
                     System.out.println("Ruta guardada en la cuenta del usuario exitosamente.");
+                    break;
+            }
+        } while (opc != 4);
+    }
+
+    private void menuAdministrador(Administrador admin) {
+        int opc;
+        do {
+            System.out.println("\n--- MENÚ ADMINISTRADOR (MÓDULO 2) ---");
+            System.out.println("1. Registrar nueva ruta en el catálogo");
+            System.out.println("2. Suspender ruta del catálogo");
+            System.out.println("3. Listar todas las rutas");
+            System.out.println("4. Cerrar sesión");
+            System.out.print("Opción: ");
+            opc = Integer.parseInt(sc.nextLine());
+
+            switch (opc) {
+                case 1:
+                    System.out.print("Código de línea (ej. C2): ");
+                    String cod = sc.nextLine();
+                    System.out.print("Nombre de ruta: ");
+                    String nom = sc.nextLine();
+                    System.out.print("Sector de origen: ");
+                    String orig = sc.nextLine();
+                    System.out.print("Sector de destino: ");
+                    String dest = sc.nextLine();
+
+                    Ruta nuevaRuta = new Ruta(cod, nom, orig, dest, "OPERATIVA");
+                    if (gestorRutas.agregarRuta(nuevaRuta)) {
+                        admin.registrarRuta(nuevaRuta);
+                        System.out.println("Ruta registrada exitosamente en el catálogo del DMQ.");
+                    } else {
+                        System.out.println("Error: Ya existe una ruta con ese código.");
+                    }
+                    break;
+                case 2:
+                    System.out.print("Ingrese el código de la ruta a suspender: ");
+                    String codSusp = sc.nextLine();
+                    Ruta r = gestorRutas.buscarRutaPorCodigo(codSusp);
+                    if (r != null) {
+                        System.out.print("Motivo de suspensión: ");
+                        String motivo = sc.nextLine();
+                        admin.suspenderRuta(r, motivo);
+                        System.out.println("Ruta suspendida y deshabilitada del catálogo de opciones del usuario.");
+                    } else {
+                        System.out.println("Ruta no encontrada.");
+                    }
+                    break;
+                case 3:
+                    System.out.println("\n** LISTADO GENERAL DE RUTAS **");
+                    System.out.println(gestorRutas.listarTodasLasRutas());
                     break;
             }
         } while (opc != 4);

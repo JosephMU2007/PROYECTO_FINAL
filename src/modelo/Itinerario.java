@@ -6,7 +6,7 @@ import java.util.List;
         private int idItinerario;
         private String origen;
         private String destino;
-        private String criterioOptimizacion;
+        private String criterioOptimizacion; // Más rápido, Menos transbordos, Menos caminata
         private String horaSalida;
         private double duracionEstimadaMin;
         private double costoTotal;
