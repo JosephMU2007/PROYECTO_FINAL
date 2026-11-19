@@ -27,7 +27,13 @@ public class Pasajero extends Usuario{
         return tarifaBase;
     }
 
-    public PerfilTarifario getPerfilTarifario() { return perfilTarifario; }
-    public String getSectorResidencia() { return sectorResidencia; }
-    public List<RutaFavorita> getRutasFavoritas() { return rutasFavoritas; }
+    public PerfilTarifario getPerfilTarifario() {
+        return perfilTarifario;
+    }
+    public String getSectorResidencia() {
+        return sectorResidencia;
+    }
+    public List<RutaFavorita> getRutasFavoritas() {
+        return rutasFavoritas;
+    }
 }
