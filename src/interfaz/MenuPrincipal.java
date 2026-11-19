@@ -127,7 +127,7 @@ public class MenuPrincipal {
     private void menuAdministrador(Administrador admin) {
         int opc;
         do {
-            System.out.println("\n--- MENÚ ADMINISTRADOR (MÓDULO 2) ---");
+            System.out.println("\n** MENÚ ADMINISTRADOR **");
             System.out.println("1. Registrar nueva ruta en el catálogo");
             System.out.println("2. Suspender ruta del catálogo");
             System.out.println("3. Listar todas las rutas");

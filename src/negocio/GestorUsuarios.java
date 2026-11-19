@@ -43,6 +43,6 @@ public class GestorUsuarios {
         }
         Pasajero nuevo = new Pasajero(usuarios.size() + 1, nombre, correo, pass, "ACTIVA", sector, perfil);
         usuarios.add(nuevo);
-        return "Registro exitoso. ¡Bienvenido al Asistente de Movilidad del DMQ!";
+        return "Registro exitoso. ¡Bienvenido al Asistente de Movilidad del DMQ!"   ;
     }
 }
