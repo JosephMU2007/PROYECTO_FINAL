@@ -22,6 +22,20 @@ public class Administrador extends Usuario  {
         return false;
     }
 
+    public boolean actualizarRuta(Ruta rutaActualizada) {
+        if (rutaActualizada == null) {
+            return false;
+        }
+        for (int i = 0; i < rutasAdministradas.size(); i++) {
+            if (rutasAdministradas.get(i).getCodigoLinea().equalsIgnoreCase(rutaActualizada.getCodigoLinea())) {
+                rutasAdministradas.set(i, rutaActualizada);
+                return true;
+            }
+        }
+        rutasAdministradas.add(rutaActualizada);
+        return true;
+    }
+
     public void suspenderRuta(Ruta ruta, String motivo) {
         if (ruta != null) {
             ruta.actualizarEstado("SUSPENDIDA (" + motivo + ")");

@@ -82,9 +82,10 @@ public class MenuPrincipal {
         do {
             System.out.println("\n** MENÚ PASAJERO **");
             System.out.println("1. Consultar catálogo de rutas disponibles ");
-            System.out.println("2. Planificar itinerario óptimo y calcular ETA ");
-            System.out.println("3. Guardar ruta favorita ");
-            System.out.println("4. Cerrar sesión");
+            System.out.println("2. Consultar tarifa según mi perfil (Módulo 1)");
+            System.out.println("3. Planificar itinerario óptimo y calcular ETA ");
+            System.out.println("4. Guardar ruta favorita ");
+            System.out.println("5. Cerrar sesión");
             System.out.print("Opción: ");
             opc = Integer.parseInt(sc.nextLine());
 
@@ -94,6 +95,13 @@ public class MenuPrincipal {
                     System.out.println(gestorRutas.listarRutasActivas());
                     break;
                 case 2:
+                    System.out.print("Ingrese la tarifa base del pasaje ($): ");
+                    double tarifaBase = Double.parseDouble(sc.nextLine());
+                    double tarifaFinal = pasajero.consultarTarifa(tarifaBase);
+                    System.out.println("Perfil: " + pasajero.getPerfilTarifario().getTipoPerfil()
+                            + " | Tarifa a pagar: $" + String.format("%.2f", tarifaFinal));
+                    break;
+                case 3:
                     System.out.print("Ingrese código de línea de bus (ej. C1): ");
                     String cod = sc.nextLine();
                     Ruta ruta = gestorRutas.buscarRutaPorCodigo(cod);
@@ -113,7 +121,7 @@ public class MenuPrincipal {
                         System.out.println("No se encontraron rutas directas ni combinaciones disponibles.");
                     }
                     break;
-                case 3:
+                case 4:
                     System.out.print("Ingrese el nombre personalizado para su ruta favorita: ");
                     String nombreFav = sc.nextLine();
                     RutaFavorita rf = new RutaFavorita(nombreFav, "2026-11-18");
@@ -121,7 +129,7 @@ public class MenuPrincipal {
                     System.out.println("Ruta guardada en la cuenta del usuario exitosamente.");
                     break;
             }
-        } while (opc != 4);
+        } while (opc != 5);
     }
 
     private void menuAdministrador(Administrador admin) {
@@ -129,9 +137,10 @@ public class MenuPrincipal {
         do {
             System.out.println("\n** MENÚ ADMINISTRADOR **");
             System.out.println("1. Registrar nueva ruta en el catálogo");
-            System.out.println("2. Suspender ruta del catálogo");
-            System.out.println("3. Listar todas las rutas");
-            System.out.println("4. Cerrar sesión");
+            System.out.println("2. Actualizar ruta existente");
+            System.out.println("3. Suspender ruta del catálogo");
+            System.out.println("4. Listar todas las rutas");
+            System.out.println("5. Cerrar sesión");
             System.out.print("Opción: ");
             opc = Integer.parseInt(sc.nextLine());
 
@@ -155,6 +164,41 @@ public class MenuPrincipal {
                     }
                     break;
                 case 2:
+                    System.out.print("Ingrese el código de la ruta a actualizar: ");
+                    String codAct = sc.nextLine();
+                    Ruta rutaAct = gestorRutas.buscarRutaPorCodigo(codAct);
+                    if (rutaAct != null) {
+                        System.out.print("Nuevo nombre de ruta o Enter para mantener: ");
+                        String nuevoNom = sc.nextLine();
+                        if (!nuevoNom.isBlank()) {
+                            rutaAct.setNombre(nuevoNom);
+                        }
+
+                        System.out.print("Nuevo sector de origen o Enter para mantener: ");
+                        String nuevoOrig = sc.nextLine();
+                        if (!nuevoOrig.isBlank()) {
+                            rutaAct.setSectorOrigen(nuevoOrig);
+                        }
+
+                        System.out.print("Nuevo sector de destino o Enter para mantener: ");
+                        String nuevoDest = sc.nextLine();
+                        if (!nuevoDest.isBlank()) {
+                            rutaAct.setSectorDestino(nuevoDest);
+                        }
+
+                        System.out.print("Nuevo estado (OPERATIVA / DESVIADA / SUSPENDIDA o Enter para mantener): ");
+                        String nuevoEstado = sc.nextLine();
+                        if (!nuevoEstado.isBlank()) {
+                            rutaAct.actualizarEstado(nuevoEstado);
+                        }
+
+                        admin.actualizarRuta(rutaAct);
+                        System.out.println("Trazado de ruta actualizado.");
+                    } else {
+                        System.out.println("Ruta no encontrada.");
+                    }
+                    break;
+                case 3:
                     System.out.print("Ingrese el código de la ruta a suspender: ");
                     String codSusp = sc.nextLine();
                     Ruta r = gestorRutas.buscarRutaPorCodigo(codSusp);
@@ -167,11 +211,11 @@ public class MenuPrincipal {
                         System.out.println("Ruta no encontrada.");
                     }
                     break;
-                case 3:
+                case 4:
                     System.out.println("\n** LISTADO GENERAL DE RUTAS **");
                     System.out.println(gestorRutas.listarTodasLasRutas());
                     break;
             }
-        } while (opc != 4);
+        } while (opc != 5);
     }
 }

@@ -49,6 +49,24 @@ import java.util.List;
             if (it != null) itinerarios.add(it);
         }
 
+        public void setNombre(String nombre) {
+            if (nombre != null && !nombre.isBlank()) {
+                this.nombre = nombre;
+            }
+        }
+
+        public void setSectorOrigen(String sectorOrigen) {
+            if (sectorOrigen != null && !sectorOrigen.isBlank()) {
+                this.sectorOrigen = sectorOrigen;
+            }
+        }
+
+        public void setSectorDestino(String sectorDestino) {
+            if (sectorDestino != null && !sectorDestino.isBlank()) {
+                this.sectorDestino = sectorDestino;
+            }
+        }
+
         public String getCodigoLinea() {
             return codigoLinea;
         }
