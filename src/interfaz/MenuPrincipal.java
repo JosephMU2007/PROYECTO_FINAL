@@ -3,6 +3,8 @@ package interfaz;
 
 import modelo.*;
 import negocio.*;
+
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class MenuPrincipal {
@@ -22,10 +24,10 @@ public class MenuPrincipal {
         int opc;
         do {
             System.out.println("\n BUSQ - ASISTENTE DE MOVILIDAD DMQ ");
-            System.out.println("1. Registrarse");
+            System.out.println("\n1. Registrarse");
             System.out.println("2. Iniciar Sesión");
             System.out.println("3. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("\nSeleccione una opción: ");
             opc = Integer.parseInt(sc.nextLine());
 
             if (opc == 1) {
@@ -58,18 +60,19 @@ public class MenuPrincipal {
     }
 
     private void procesarLogin() {
-        System.out.print("Correo: ");
+        System.out.print("\n**Inicio de Sesion**");
+        System.out.print("\nCorreo: ");
         String correo = sc.nextLine();
         System.out.print("Contraseña: ");
         String pass = sc.nextLine();
 
         Usuario usuario = gestorUsuarios.autenticar(correo, pass);
         if (usuario == null) {
-            System.out.println("Error: usuario o contraseña incorrectos.");
+            System.out.println("\nError: usuario o contraseña incorrectos.");
             return;
         }
 
-        System.out.println("Bienvenido, " + usuario.getNombreCompleto() + "!");
+        System.out.println("\nBienvenido, " + usuario.getNombreCompleto() + "!");
         if (usuario instanceof Pasajero) {
             menuPasajero((Pasajero) usuario);
         } else if (usuario instanceof Administrador) {
@@ -82,11 +85,11 @@ public class MenuPrincipal {
         do {
             System.out.println("\n** MENÚ PASAJERO **");
             System.out.println("1. Consultar catálogo de rutas disponibles ");
-            System.out.println("2. Consultar tarifa según mi perfil (Módulo 1)");
+            System.out.println("2. Consultar tarifa según mi perfil");
             System.out.println("3. Planificar itinerario óptimo y calcular ETA ");
             System.out.println("4. Guardar ruta favorita ");
             System.out.println("5. Cerrar sesión");
-            System.out.print("Opción: ");
+            System.out.print("\nOpción: ");
             opc = Integer.parseInt(sc.nextLine());
 
             switch (opc) {
@@ -95,14 +98,14 @@ public class MenuPrincipal {
                     System.out.println(gestorRutas.listarRutasActivas());
                     break;
                 case 2:
-                    System.out.print("Ingrese la tarifa base del pasaje ($): ");
+                    System.out.print("\nIngrese la tarifa base del pasaje ($): ");
                     double tarifaBase = Double.parseDouble(sc.nextLine());
                     double tarifaFinal = pasajero.consultarTarifa(tarifaBase);
                     System.out.println("Perfil: " + pasajero.getPerfilTarifario().getTipoPerfil()
                             + " | Tarifa a pagar: $" + String.format("%.2f", tarifaFinal));
                     break;
                 case 3:
-                    System.out.print("Ingrese código de línea de bus (ej. C1): ");
+                    System.out.print("\nIngrese código de línea de bus (ej. C1): ");
                     String cod = sc.nextLine();
                     Ruta ruta = gestorRutas.buscarRutaPorCodigo(cod);
                     if (ruta != null && ruta.getEstado().startsWith("OPERATIVA")) {
@@ -122,7 +125,7 @@ public class MenuPrincipal {
                     }
                     break;
                 case 4:
-                    System.out.print("Ingrese el nombre personalizado para su ruta favorita: ");
+                    System.out.print("\nIngrese el nombre personalizado para su ruta favorita: ");
                     String nombreFav = sc.nextLine();
                     RutaFavorita rf = new RutaFavorita(nombreFav, "2026-11-18");
                     pasajero.guardarRutaFavorita(rf);
@@ -146,7 +149,7 @@ public class MenuPrincipal {
 
             switch (opc) {
                 case 1:
-                    System.out.print("Código de línea (ej. C2): ");
+                    System.out.print("\nCódigo de línea (ej. C2): ");
                     String cod = sc.nextLine();
                     System.out.print("Nombre de ruta: ");
                     String nom = sc.nextLine();
@@ -164,7 +167,7 @@ public class MenuPrincipal {
                     }
                     break;
                 case 2:
-                    System.out.print("Ingrese el código de la ruta a actualizar: ");
+                    System.out.print("\nIngrese el código de la ruta a actualizar: ");
                     String codAct = sc.nextLine();
                     Ruta rutaAct = gestorRutas.buscarRutaPorCodigo(codAct);
                     if (rutaAct != null) {
@@ -199,7 +202,7 @@ public class MenuPrincipal {
                     }
                     break;
                 case 3:
-                    System.out.print("Ingrese el código de la ruta a suspender: ");
+                    System.out.print("\nIngrese el código de la ruta a suspender: ");
                     String codSusp = sc.nextLine();
                     Ruta r = gestorRutas.buscarRutaPorCodigo(codSusp);
                     if (r != null) {
