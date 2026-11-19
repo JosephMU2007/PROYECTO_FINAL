@@ -20,7 +20,7 @@ public class MenuPrincipal {
     public void iniciar() {
         int opc;
         do {
-            System.out.println("\n========== BUSQ - MÓDULOS 1, 2 Y 3 ==========");
+            System.out.println("\n BUSQ ");
             System.out.println("1. Registrarse (Módulo 1)");
             System.out.println("2. Iniciar Sesión (Módulo 1)");
             System.out.println("3. Salir");
@@ -37,7 +37,7 @@ public class MenuPrincipal {
     }
 
     private void registrarPasajeroUI() {
-        System.out.println("\n--- REGISTRO DE PASAJERO ---");
+        System.out.println("\n** REGISTRO DE PASAJERO **");
         System.out.print("Nombre completo: ");
         String nombre = sc.nextLine();
         System.out.print("Correo electrónico: ");

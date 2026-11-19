@@ -33,18 +33,23 @@ public class Usuario {
     }
 
     public int getIdUsuario() {
+
         return idUsuario;
     }
     public String getNombreCompleto() {
+
         return nombreCompleto;
     }
     public String getCorreo() {
+
         return correo;
     }
     public String getContrasena() {
+
         return contrasena;
     }
     public String getEstadoCuenta() {
+
         return estadoCuenta;
     }
 }
