@@ -1,23 +1,41 @@
 package negocio;
 
 import modelo.*;
-import java.util.List;
 
 public class GestorPlanificacion {
+
     public Itinerario generarItinerarioOptimo(Ruta ruta, String criterio) {
         if (ruta == null) {
             return null;
         }
 
-        List<Itinerario> itinerarios = ruta.getItinerarios();
-        if (!itinerarios.isEmpty()) {
-            return itinerarios.get(0);
+        double distancia = ruta.calcularDistanciaTotal();
+        if (distancia <= 0) {
+            distancia = 15.0;
         }
 
-        Itinerario nuevo = new Itinerario(99, ruta.getSectorOrigen(), ruta.getSectorDestino(), criterio, "08:00", 0.35);
-        nuevo.agregarTramo(new Tramo(1, "General", ruta.calcularDistanciaTotal(), ruta.calcularDistanciaTotal() * 2.5));
-        ruta.agregarItinerario(nuevo);
-        return nuevo;
+        double duracionBase = (distancia / 25.0) * 60.0;
+        double duracionFinal = duracionBase;
+        String tipoTramo = "Troncal directo";
+
+        if ("Menos transbordos".equalsIgnoreCase(criterio)) {
+            duracionFinal = duracionBase * 1.10;
+            tipoTramo = "Troncal sin transbordos";
+        } else if ("Menos caminata".equalsIgnoreCase(criterio)) {
+            duracionFinal = duracionBase * 1.05;
+            tipoTramo = "Alimentador / Parada cercana";
+        }
+
+        Itinerario itinerario = new Itinerario(
+                1,
+                ruta.getSectorOrigen(),
+                ruta.getSectorDestino(),
+                criterio,
+                "08:00",
+                0.35
+        );
+        itinerario.agregarTramo(new Tramo(1, tipoTramo, distancia, duracionFinal));
+        return itinerario;
     }
 
     public double calcularETA(Ruta ruta, double velocidadPromedioKmH) {

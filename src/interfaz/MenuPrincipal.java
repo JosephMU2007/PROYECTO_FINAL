@@ -47,7 +47,7 @@ public class MenuPrincipal {
             try {
                 return Integer.parseInt(entrada);
             } catch (NumberFormatException e) {
-                System.out.println("Error: ingrese solo un número entero válido del menú.");
+                System.out.println("Entrada inválida. Por favor ingrese un número válido del menú.");
             }
         }
     }
@@ -59,7 +59,7 @@ public class MenuPrincipal {
             try {
                 return Double.parseDouble(entrada);
             } catch (NumberFormatException e) {
-                System.out.println("Error: ingrese un número decimal válido (ej. 0.35).");
+                System.out.println("Entrada inválida. Ingrese un valor decimal válido (ej. 0.35).");
             }
         }
     }
@@ -137,8 +137,9 @@ public class MenuPrincipal {
             System.out.println("2. Consultar tarifa según mi perfil");
             System.out.println("3. Planificar itinerario óptimo y calcular ETA");
             System.out.println("4. Guardar ruta favorita");
-            System.out.println("5. Cerrar sesión");
-            opc = leerEntero("\nSeleccione una opción (1-5): ");
+            System.out.println("5. Consultar mis rutas favoritas");
+            System.out.println("6. Cerrar sesión");
+            opc = leerEntero("\nSeleccione una opción (1-6): ");
 
             switch (opc) {
                 case 1:
@@ -204,13 +205,40 @@ public class MenuPrincipal {
                     }
                     break;
                 case 5:
+                    consultarRutasFavoritasUI(pasajero);
+                    break;
+                case 6:
                     System.out.println("Cerrando sesión de pasajero...");
                     break;
                 default:
-                    System.out.println("Opción fuera del menú. Ingrese un número válido (1-5).");
+                    System.out.println("Opción fuera del menú. Ingrese un número válido (1-6).");
                     break;
             }
-        } while (opc != 5);
+        } while (opc != 6);
+    }
+
+    private void consultarRutasFavoritasUI(Pasajero pasajero) {
+        System.out.println("\n** MIS RUTAS FAVORITAS (" + pasajero.contarRutasFavoritas() + ") **");
+        if (pasajero.getRutasFavoritas().isEmpty()) {
+            System.out.println("Aún no tienes rutas favoritas guardadas.");
+            return;
+        }
+
+        for (int i = 0; i < pasajero.getRutasFavoritas().size(); i++) {
+            RutaFavorita rf = pasajero.getRutasFavoritas().get(i);
+            System.out.println((i + 1) + ". " + rf.getNombrePersonalizado() + " (Guardada: " + rf.getFechaGuardado() + ")");
+            for (Itinerario it : pasajero.consultarItinerarios(rf)) {
+                System.out.println("   - " + it.getOrigen() + " -> " + it.getDestino()
+                        + " | Criterio: " + it.getCriterioOptimizacion()
+                        + " | Duración: " + it.getDuracionEstimadaMin() + " min"
+                        + " | Costo perfil: $" + String.format("%.2f", it.calcularCostoTotal(pasajero.getPerfilTarifario())));
+            }
+        }
+
+        RutaFavorita ultima = pasajero.consultarUltimaRutaFavorita();
+        if (ultima != null) {
+            System.out.println("Última ruta favorita agregada: " + ultima.getNombrePersonalizado());
+        }
     }
 
     private void menuAdministrador(Administrador admin) {
