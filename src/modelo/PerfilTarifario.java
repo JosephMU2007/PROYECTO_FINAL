@@ -23,13 +23,13 @@ public class PerfilTarifario {
     }
 
     public String getTipoPerfil() {
-
         return tipoPerfil;
     }
-    public double getPorcentajeSubsidio() {
 
+    public double getPorcentajeSubsidio() {
         return porcentajeSubsidio;
     }
+
     public boolean isDocumentacionValidada() {
         return documentacionValidada;
     }

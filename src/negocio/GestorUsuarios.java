@@ -30,19 +30,18 @@ public class GestorUsuarios {
     }
 
     public String registrarPasajero(String nombre, String correo, String pass, String sector, PerfilTarifario perfil) {
-
         if (pass == null || pass.length() < 8) {
-            return "Error: la contraseña debe contener mínimo 8 caracteres." ;
+            return "Error: la contraseña debe contener mínimo 8 caracteres.";
         }
 
-        // Valida si ya existe un usuario registrado con ese correo
         for (Usuario u : usuarios) {
             if (u.getCorreo().equalsIgnoreCase(correo)) {
                 return "Error: el correo electrónico ya se encuentra registrado.";
             }
         }
+
         Pasajero nuevo = new Pasajero(usuarios.size() + 1, nombre, correo, pass, "ACTIVA", sector, perfil);
         usuarios.add(nuevo);
-        return "Registro exitoso. ¡Bienvenido al Asistente de Movilidad DMQ!"   ;
+        return "Registro exitoso. ¡Bienvenido al Asistente de Movilidad DMQ!";
     }
 }

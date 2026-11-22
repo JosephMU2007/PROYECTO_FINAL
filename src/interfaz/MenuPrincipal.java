@@ -1,10 +1,8 @@
-
 package interfaz;
 
 import modelo.*;
 import negocio.*;
 
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class MenuPrincipal {
@@ -12,12 +10,14 @@ public class MenuPrincipal {
     private GestorUsuarios gestorUsuarios;
     private GestorRutas gestorRutas;
     private GestorPlanificacion gestorPlanificacion;
+    private Itinerario ultimoItinerario;
 
     public MenuPrincipal() {
         this.sc = new Scanner(System.in);
         this.gestorUsuarios = new GestorUsuarios();
         this.gestorRutas = new GestorRutas();
         this.gestorPlanificacion = new GestorPlanificacion();
+        this.ultimoItinerario = null;
     }
 
     public void iniciar() {
@@ -27,14 +27,14 @@ public class MenuPrincipal {
             System.out.println("\n1. Registrarse");
             System.out.println("2. Iniciar Sesión");
             System.out.println("3. Salir");
-            opc = leerEntero("\nSeleccione una opción: ");;
+            opc = leerEntero("\nSeleccione una opción (1-3): ");
 
             if (opc == 1) {
                 registrarPasajeroUI();
             } else if (opc == 2) {
                 procesarLogin();
             } else if (opc != 3) {
-                System.out.println("Opción fuera del menú. Ingrese un número del 1 al 3.");
+                System.out.println("Opción fuera del menú. Ingrese un número válido (1-3).");
             }
         } while (opc != 3);
         System.out.println("\nGracias por utilizar BusQ!.");
@@ -47,7 +47,19 @@ public class MenuPrincipal {
             try {
                 return Integer.parseInt(entrada);
             } catch (NumberFormatException e) {
-                System.out.println("Error: ingrese solo un número entero válido.");
+                System.out.println("Error: ingrese solo un número entero válido del menú.");
+            }
+        }
+    }
+
+    private double leerDecimal(String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String entrada = sc.nextLine().trim().replace(",", ".");
+            try {
+                return Double.parseDouble(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Error: ingrese un número decimal válido (ej. 0.35).");
             }
         }
     }
@@ -62,10 +74,34 @@ public class MenuPrincipal {
         String pass = sc.nextLine();
         System.out.print("Sector de residencia: ");
         String sector = sc.nextLine();
-        System.out.print("Perfil Tarifario (General / Estudiante / Adulto Mayor / Con Discapacidad): ");
-        String tipoPerfil = sc.nextLine();
 
-        double subsidio = tipoPerfil.equalsIgnoreCase("Estudiante") ? 0.50 : 0.0;
+        System.out.println("\nPerfil Tarifario:");
+        System.out.println("1. General");
+        System.out.println("2. Estudiante");
+        System.out.println("3. Adulto Mayor");
+        System.out.println("4. Con Discapacidad");
+
+        int opcPerfil;
+        do {
+            opcPerfil = leerEntero("Ingrese un número del menú (1-4): ");
+            if (opcPerfil < 1 || opcPerfil > 4) {
+                System.out.println("Opción fuera del menú. Ingrese un número válido (1-4).");
+            }
+        } while (opcPerfil < 1 || opcPerfil > 4);
+
+        String tipoPerfil = "General";
+        double subsidio = 0.0;
+        if (opcPerfil == 2) {
+            tipoPerfil = "Estudiante";
+            subsidio = 0.50;
+        } else if (opcPerfil == 3) {
+            tipoPerfil = "Adulto Mayor";
+            subsidio = 0.50;
+        } else if (opcPerfil == 4) {
+            tipoPerfil = "Con Discapacidad";
+            subsidio = 0.7143;
+        }
+
         PerfilTarifario perfil = new PerfilTarifario(tipoPerfil, subsidio, true);
 
         String resultado = gestorUsuarios.registrarPasajero(nombre, correo, pass, sector, perfil);
@@ -97,12 +133,12 @@ public class MenuPrincipal {
         int opc;
         do {
             System.out.println("\n** MENÚ PASAJERO **");
-            System.out.println("1. Consultar catálogo de rutas disponibles ");
+            System.out.println("1. Consultar catálogo de rutas disponibles");
             System.out.println("2. Consultar tarifa según mi perfil");
-            System.out.println("3. Planificar itinerario óptimo y calcular ETA ");
-            System.out.println("4. Guardar ruta favorita ");
+            System.out.println("3. Planificar itinerario óptimo y calcular ETA");
+            System.out.println("4. Guardar ruta favorita");
             System.out.println("5. Cerrar sesión");
-            opc = leerEntero("\nSeleccione una opción: ");;
+            opc = leerEntero("\nSeleccione una opción (1-5): ");
 
             switch (opc) {
                 case 1:
@@ -110,8 +146,7 @@ public class MenuPrincipal {
                     System.out.println(gestorRutas.listarRutasActivas());
                     break;
                 case 2:
-                    System.out.print("\nIngrese la tarifa base del pasaje ($): ");
-                    double tarifaBase = Double.parseDouble(sc.nextLine());
+                    double tarifaBase = leerDecimal("\nIngrese la tarifa base del pasaje ($): ");
                     double tarifaFinal = pasajero.consultarTarifa(tarifaBase);
                     System.out.println("Perfil: " + pasajero.getPerfilTarifario().getTipoPerfil()
                             + " | Tarifa a pagar: $" + String.format("%.2f", tarifaFinal));
@@ -121,15 +156,34 @@ public class MenuPrincipal {
                     String cod = sc.nextLine();
                     Ruta ruta = gestorRutas.buscarRutaPorCodigo(cod);
                     if (ruta != null && ruta.getEstado().startsWith("OPERATIVA")) {
-                        System.out.print("Criterio de optimización (Más rápido / Menos transbordos / Menos caminata): ");
-                        String criterio = sc.nextLine();
-                        Itinerario it = gestorPlanificacion.generarItinerarioOptimo(ruta, criterio);
-                        double costoFinal = it.calcularCostoTotal(pasajero.getPerfilTarifario());
-                        double etaMin = gestorPlanificacion.calcularETA(ruta.calcularDistanciaTotal(), 30.0);
+                        System.out.println("\nCriterio de optimización:");
+                        System.out.println("1. Más rápido");
+                        System.out.println("2. Menos transbordos");
+                        System.out.println("3. Menos caminata");
+
+                        int opcCriterio;
+                        do {
+                            opcCriterio = leerEntero("Ingrese un número del menú (1-3): ");
+                            if (opcCriterio < 1 || opcCriterio > 3) {
+                                System.out.println("Opción fuera del menú. Ingrese un número válido (1-3).");
+                            }
+                        } while (opcCriterio < 1 || opcCriterio > 3);
+
+                        String criterio = "Más rápido";
+                        if (opcCriterio == 2) {
+                            criterio = "Menos transbordos";
+                        } else if (opcCriterio == 3) {
+                            criterio = "Menos caminata";
+                        }
+
+                        ultimoItinerario = gestorPlanificacion.generarItinerarioOptimo(ruta, criterio);
+                        double costoFinal = ultimoItinerario.calcularCostoTotal(pasajero.getPerfilTarifario());
+                        double etaMin = gestorPlanificacion.calcularETA(ruta, 30.0);
 
                         System.out.println("\n** ITINERARIO GENERADO **");
-                        System.out.println("Origen: " + it.getOrigen() + " -> Destino: " + it.getDestino());
-                        System.out.println("Duración estimada: " + it.getDuracionEstimadaMin() + " min");
+                        System.out.println("Origen: " + ultimoItinerario.getOrigen() + " -> Destino: " + ultimoItinerario.getDestino());
+                        System.out.println("Criterio aplicado: " + criterio);
+                        System.out.println("Duración estimada: " + ultimoItinerario.getDuracionEstimadaMin() + " min");
                         System.out.println("Costo total con perfil (" + pasajero.getPerfilTarifario().getTipoPerfil() + "): $" + String.format("%.2f", costoFinal));
                         System.out.println("ETA estimado para llegada: " + String.format("%.2f", etaMin) + " min");
                     } else {
@@ -137,16 +191,26 @@ public class MenuPrincipal {
                     }
                     break;
                 case 4:
-                    System.out.print("\nIngrese el nombre personalizado para su ruta favorita: ");
-                    String nombreFav = sc.nextLine();
-                    RutaFavorita rf = new RutaFavorita(nombreFav, "2026-11-18");
-                    pasajero.guardarRutaFavorita(rf);
-                    System.out.println("Ruta guardada en la cuenta del usuario exitosamente.");
+                    if (ultimoItinerario == null) {
+                        System.out.println("Primero planifique un itinerario en la opción 3 para poder guardarlo como favorito.");
+                    } else {
+                        System.out.print("\nIngrese el nombre personalizado para su ruta favorita: ");
+                        String nombreFav = sc.nextLine();
+                        RutaFavorita rf = new RutaFavorita(nombreFav, "2026-11-22");
+                        rf.agregarItinerario(ultimoItinerario);
+                        pasajero.guardarRutaFavorita(rf);
+                        System.out.println("Ruta guardada en la cuenta del usuario exitosamente. Total favoritas: "
+                                + pasajero.contarRutasFavoritas());
+                    }
+                    break;
+                case 5:
+                    System.out.println("Cerrando sesión de pasajero...");
+                    break;
+                default:
+                    System.out.println("Opción fuera del menú. Ingrese un número válido (1-5).");
                     break;
             }
         } while (opc != 5);
-
-        System.out.println("Ingrese un numero valido\n");
     }
 
     private void menuAdministrador(Administrador admin) {
@@ -158,7 +222,7 @@ public class MenuPrincipal {
             System.out.println("3. Suspender ruta del catálogo");
             System.out.println("4. Listar todas las rutas");
             System.out.println("5. Cerrar sesión");
-            opc = leerEntero("\nSeleccione una opción: ");;
+            opc = leerEntero("\nSeleccione una opción (1-5): ");
 
             switch (opc) {
                 case 1:
@@ -190,22 +254,38 @@ public class MenuPrincipal {
                             rutaAct.setNombre(nuevoNom);
                         }
 
-                        System.out.print("Nuevo sector de origen o Enter para mantener: ");
-                        String nuevoOrig = sc.nextLine();
-                        if (!nuevoOrig.isBlank()) {
+                        System.out.print("Nuevo sector de origen (o Enter para mantener): ");
+                        String nuevoOrig = sc.nextLine().trim();
+                        if (!nuevoOrig.isEmpty() && !nuevoOrig.equals(".")) {
                             rutaAct.setSectorOrigen(nuevoOrig);
                         }
 
-                        System.out.print("Nuevo sector de destino o Enter para mantener: ");
-                        String nuevoDest = sc.nextLine();
-                        if (!nuevoDest.isBlank()) {
+                        System.out.print("Nuevo sector de destino (o Enter para mantener): ");
+                        String nuevoDest = sc.nextLine().trim();
+                        if (!nuevoDest.isEmpty() && !nuevoDest.equals(".")) {
                             rutaAct.setSectorDestino(nuevoDest);
                         }
 
-                        System.out.print("Nuevo estado (OPERATIVA / DESVIADA / SUSPENDIDA o Enter para mantener): ");
-                        String nuevoEstado = sc.nextLine();
-                        if (!nuevoEstado.isBlank()) {
-                            rutaAct.actualizarEstado(nuevoEstado);
+                        System.out.println("\nNuevo estado de la ruta:");
+                        System.out.println("0. Mantener estado actual (" + rutaAct.getEstado() + ")");
+                        System.out.println("1. OPERATIVA");
+                        System.out.println("2. DESVIADA");
+                        System.out.println("3. SUSPENDIDA");
+
+                        int opcEstado;
+                        do {
+                            opcEstado = leerEntero("Ingrese un número del menú (0-3): ");
+                            if (opcEstado < 0 || opcEstado > 3) {
+                                System.out.println("Opción fuera del menú. Ingrese un número válido (0-3).");
+                            }
+                        } while (opcEstado < 0 || opcEstado > 3);
+
+                        if (opcEstado == 1) {
+                            rutaAct.actualizarEstado("OPERATIVA");
+                        } else if (opcEstado == 2) {
+                            rutaAct.actualizarEstado("DESVIADA");
+                        } else if (opcEstado == 3) {
+                            rutaAct.actualizarEstado("SUSPENDIDA");
                         }
 
                         admin.actualizarRuta(rutaAct);
@@ -231,9 +311,13 @@ public class MenuPrincipal {
                     System.out.println("\n** LISTADO GENERAL DE RUTAS **");
                     System.out.println(gestorRutas.listarTodasLasRutas());
                     break;
+                case 5:
+                    System.out.println("Cerrando sesión de administrador...");
+                    break;
+                default:
+                    System.out.println("Opción fuera del menú. Ingrese un número válido (1-5).");
+                    break;
             }
         } while (opc != 5);
-
-        System.out.println("Ingrese un numero valido\n");
     }
 }

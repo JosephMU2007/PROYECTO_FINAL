@@ -16,40 +16,40 @@ public class Usuario {
     }
 
     public boolean iniciarSesion(String correo, String contrasena) {
-        return this.correo.equalsIgnoreCase(correo)&&
-                this.contrasena.equals(contrasena)&&
-                "ACTIVA".equalsIgnoreCase(this.estadoCuenta);
+        return this.correo.equalsIgnoreCase(correo)
+                && this.contrasena.equals(contrasena)
+                && "ACTIVA".equalsIgnoreCase(this.estadoCuenta);
     }
 
     public void actualizarDatos(String nombreCompleto, String correo, String contrasena) {
-        if (nombreCompleto != null && !nombreCompleto.isBlank())
+        if (nombreCompleto != null && !nombreCompleto.isBlank()) {
             this.nombreCompleto = nombreCompleto;
-
-        if (correo != null && !correo.isBlank())
+        }
+        if (correo != null && !correo.isBlank()) {
             this.correo = correo;
-
-        if (contrasena != null && !contrasena.isBlank())
+        }
+        if (contrasena != null && !contrasena.isBlank()) {
             this.contrasena = contrasena;
+        }
     }
 
     public int getIdUsuario() {
-
         return idUsuario;
     }
-    public String getNombreCompleto() {
 
+    public String getNombreCompleto() {
         return nombreCompleto;
     }
-    public String getCorreo() {
 
+    public String getCorreo() {
         return correo;
     }
-    public String getContrasena() {
 
+    public String getContrasena() {
         return contrasena;
     }
-    public String getEstadoCuenta() {
 
+    public String getEstadoCuenta() {
         return estadoCuenta;
     }
 }

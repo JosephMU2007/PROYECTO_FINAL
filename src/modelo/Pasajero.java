@@ -1,8 +1,9 @@
 package modelo;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pasajero extends Usuario{
+public class Pasajero extends Usuario {
     private String sectorResidencia;
     private PerfilTarifario perfilTarifario;
     private List<RutaFavorita> rutasFavoritas;
@@ -27,12 +28,32 @@ public class Pasajero extends Usuario{
         return tarifaBase;
     }
 
+    public List<Itinerario> consultarItinerarios(RutaFavorita ruta) {
+        if (ruta != null) {
+            return ruta.consultarItinerarios();
+        }
+        return new ArrayList<>();
+    }
+
+    public int contarRutasFavoritas() {
+        return rutasFavoritas.size();
+    }
+
+    public RutaFavorita consultarUltimaRutaFavorita() {
+        if (rutasFavoritas.isEmpty()) {
+            return null;
+        }
+        return rutasFavoritas.get(rutasFavoritas.size() - 1);
+    }
+
     public PerfilTarifario getPerfilTarifario() {
         return perfilTarifario;
     }
+
     public String getSectorResidencia() {
         return sectorResidencia;
     }
+
     public List<RutaFavorita> getRutasFavoritas() {
         return rutasFavoritas;
     }

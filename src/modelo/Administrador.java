@@ -3,12 +3,11 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Administrador extends Usuario  {
-
+public class Administrador extends Usuario {
     private String rol;
     private List<Ruta> rutasAdministradas;
 
-    public Administrador(int idUsuario, String nombreCompleto, String correo, String contrasena,String estadoCuenta, String rol) {
+    public Administrador(int idUsuario, String nombreCompleto, String correo, String contrasena, String estadoCuenta, String rol) {
         super(idUsuario, nombreCompleto, correo, contrasena, estadoCuenta);
         this.rol = rol;
         this.rutasAdministradas = new ArrayList<>();
@@ -44,10 +43,9 @@ public class Administrador extends Usuario  {
 
     public String getRol() {
         return rol;
-
     }
+
     public List<Ruta> getRutasAdministradas() {
         return rutasAdministradas;
-
     }
 }

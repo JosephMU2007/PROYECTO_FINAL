@@ -15,7 +15,9 @@ public class Parada {
 
     // Distancia Euclidiana: d = sqrt((x2 - x1)^2 + (y2 - y1)^2)
     public double distanciaA(Parada otra) {
-        if (otra == null) return 0.0;
+        if (otra == null) {
+            return 0.0;
+        }
         double dx = this.coordenadaX - otra.coordenadaX;
         double dy = this.coordenadaY - otra.coordenadaY;
         return Math.sqrt(dx * dx + dy * dy);
@@ -28,12 +30,15 @@ public class Parada {
     public int getIdParada() {
         return idParada;
     }
+
     public String getNombre() {
         return nombre;
     }
+
     public double getCoordenadaX() {
         return coordenadaX;
     }
+
     public double getCoordenadaY() {
         return coordenadaY;
     }

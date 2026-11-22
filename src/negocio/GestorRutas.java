@@ -25,6 +25,10 @@ public class GestorRutas {
         it1.agregarTramo(new Tramo(1, "Troncal", 15.0, 42.0));
         r1.agregarItinerario(it1);
 
+        Bus bus1 = new Bus("BUS-01", "PCI-1024", 80, "OPERATIVO");
+        bus1.agregarItinerario(it1);
+        r1.agregarBus(bus1);
+
         rutas.add(r1);
     }
 
