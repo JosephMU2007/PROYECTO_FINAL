@@ -29,7 +29,24 @@ public class GestorRutas {
         bus1.agregarItinerario(it1);
         r1.agregarBus(bus1);
 
+        Ruta r2 = new Ruta("C2", "Corredor Central Sur", "La Marín", "Quitumbe", "OPERATIVA");
+        Parada p2_1 = new Parada(201, "Estación La Marín", 0.0, 9.0);
+        Parada p2_2 = new Parada(202, "Estación El Recreo", 0.0, 4.5);
+        Parada p2_3 = new Parada(203, "Terminal Quitumbe", 0.0, 0.0);
+        r2.agregarParada(p2_1);
+        r2.agregarParada(p2_2);
+        r2.agregarParada(p2_3);
+
+        Itinerario it2 = new Itinerario(2, "La Marín", "Quitumbe", "Más rápido", "08:15", 0.35);
+        it2.agregarTramo(new Tramo(1, "Troncal", 9.0, 25.0));
+        r2.agregarItinerario(it2);
+
+        Bus bus2 = new Bus("BUS-02", "PCI-2048", 80, "OPERATIVO");
+        bus2.agregarItinerario(it2);
+        r2.agregarBus(bus2);
+
         rutas.add(r1);
+        rutas.add(r2);
     }
 
     public boolean agregarRuta(Ruta ruta) {
