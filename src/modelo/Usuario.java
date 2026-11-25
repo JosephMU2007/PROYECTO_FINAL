@@ -16,9 +16,10 @@ public class Usuario {
     }
 
     public boolean iniciarSesion(String correo, String contrasena) {
-        return this.correo.equalsIgnoreCase(correo)
-                && this.contrasena.equals(contrasena)
-                && "ACTIVA".equalsIgnoreCase(this.estadoCuenta);
+        if (!this.estadoCuenta.equals("ACTIVA")) {
+            return false;
+        }
+        return this.correo.equals(correo) && this.contrasena.equals(contrasena);
     }
 
     public void actualizarDatos(String nombreCompleto, String correo, String contrasena) {

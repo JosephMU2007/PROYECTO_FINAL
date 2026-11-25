@@ -93,6 +93,33 @@ public class MenuPrincipal {
         }
     }
 
+    private String leerCorreoValido(String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String correo = sc.nextLine().trim();
+
+            if (correo.isEmpty()) {
+                System.out.println("Entrada inválida. El correo no puede estar vacío.");
+                continue;
+            }
+
+            int posArroba = correo.indexOf('@');
+            int posPunto = correo.lastIndexOf('.');
+
+            if (posArroba <= 0 || posArroba != correo.lastIndexOf('@')) {
+                System.out.println("Correo inválido. Debe contener un solo '@', sin ir al inicio.");
+                continue;
+            }
+
+            if (posPunto <= posArroba + 1 || posPunto >= correo.length() - 1) {
+                System.out.println("Correo inválido. Debe contener un '.' después del '@' (ej. usuario@udla.edu.ec).");
+                continue;
+            }
+
+            return correo;
+        }
+    }
+
     private String leerCarnetConadis() {
         while (true) {
             System.out.print("Ingrese los 10 dígitos del carnet CONADIS: ");
@@ -122,8 +149,7 @@ public class MenuPrincipal {
     private void registrarPasajeroUI() {
         System.out.println("\n** REGISTRO DE PASAJERO **");
         String nombre = leerSoloLetras("Nombre completo: ");
-        System.out.print("Correo electrónico: ");
-        String correo = sc.nextLine().trim();
+        String correo = leerCorreoValido("Correo electrónico: ");
         System.out.print("Contraseña (mínimo 8 caracteres): ");
         String pass = sc.nextLine();
         String sector = leerSoloLetras("Sector de residencia: ");

@@ -29,19 +29,30 @@ public class GestorUsuarios {
         return null;
     }
 
-    public String registrarPasajero(String nombre, String correo, String pass, String sector, PerfilTarifario perfil) {
-        if (pass == null || pass.length() < 8) {
-            return "Error: la contraseña debe contener mínimo 8 caracteres.";
+    public String registrarPasajero(String nombre, String correo, String contrasena, String sector, PerfilTarifario perfil) {
+        if (correo == null || !correo.contains("@") || !correo.contains(".")) {
+            return "Error: El correo electrónico debe contener '@' y '.'.";
+        }
+
+        int posArroba = correo.indexOf('@');
+        int posPunto = correo.lastIndexOf('.');
+        if (posArroba <= 0 || posPunto <= posArroba + 1 || posPunto >= correo.length() - 1) {
+            return "Error: El formato del correo electrónico no es válido.";
+        }
+
+        if (contrasena == null || contrasena.length() < 8) {
+            return "Error: La contraseña debe tener al menos 8 caracteres.";
         }
 
         for (Usuario u : usuarios) {
-            if (u.getCorreo().equalsIgnoreCase(correo)) {
-                return "Error: el correo electrónico ya se encuentra registrado.";
+            if (u.getCorreo().equals(correo)) {
+                return "Error: El correo electrónico ya se encuentra registrado.";
             }
         }
 
-        Pasajero nuevo = new Pasajero(usuarios.size() + 1, nombre, correo, pass, "ACTIVA", sector, perfil);
+        int nuevoId = usuarios.size() + 1;
+        Pasajero nuevo = new Pasajero(nuevoId, nombre, correo, contrasena, "ACTIVA", sector, perfil);
         usuarios.add(nuevo);
-        return "Registro exitoso. ¡Bienvenido al Asistente de Movilidad DMQ!";
+        return "Registro exitoso. Bienvenido a BusQ, " + nombre + ".";
     }
 }
