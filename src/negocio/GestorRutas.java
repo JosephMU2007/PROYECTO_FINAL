@@ -6,6 +6,9 @@ import java.util.List;
 
 public class GestorRutas {
     private List<Ruta> rutas;
+    public List<Ruta> getRutas() {
+        return rutas;
+    }
 
     public GestorRutas() {
         this.rutas = new ArrayList<>();
